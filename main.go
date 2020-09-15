@@ -24,8 +24,11 @@ func main() {
 	flag.Parse()
 
 	http.Handle("/", http.FileServer(http.Dir("public/")))
-	http.Handle("/data/", http.FileServer(http.Dir(DataDir)))
-	http.Handle("/upload.cgi", &UploadHandler{})
+	http.Handle("/data/", http.FileServer(http.Dir("data/")))
+	http.Handle("/upload.cgi", &UploadHandler{
+		DataDir:     "data/",
+		MaxFileSize: 10 * 1024 * 1024,
+	})
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)

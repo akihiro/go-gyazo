@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 )
 
-var DataDir = "data/"
-
 type UploadHandler struct {
+	DataDir     string
+	MaxFileSize int64
 }
 
 func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
-	if err := r.ParseMultipartForm(1024*1024*10); err != nil {
+	if err := r.ParseMultipartForm(h.MaxFileSize); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -34,7 +34,7 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer uploadedFile.Close()
 	ext := filepath.Ext(handler.Filename)
 
-	f, err := ioutil.TempFile(DataDir, ".tempfile-*")
+	f, err := ioutil.TempFile(h.DataDir, ".tempfile-*")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Print(err)
@@ -51,6 +51,6 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := base64.RawURLEncoding.EncodeToString(hgen.Sum(nil))
-	os.Rename(f.Name(), filepath.Join(DataDir, name+ext))
+	os.Rename(f.Name(), filepath.Join(h.DataDir, name+ext))
 	log.Printf("size:%d name:%s", size, name)
 }
