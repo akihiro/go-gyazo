@@ -25,7 +25,7 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	uploadedFile, handler, err := r.FormFile("upload")
+	uploadedFile, handler, err := r.FormFile("imagedata")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Print(err)
