@@ -18,7 +18,7 @@ type UploadHandler struct {
 	MaxFileSize int64
 }
 
-func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "", http.StatusBadRequest)
 		return
