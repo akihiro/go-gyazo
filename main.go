@@ -12,7 +12,9 @@ import (
 )
 
 var (
-	listen = flag.String("listen", ":10000", "listen address")
+	listen  = flag.String("listen", ":10000", "listen address")
+	datadir = flag.String("datadir", "data/", "data directory")
+	maxsize = flag.Int64("maxsize", 10*1024*1024, "maximaum file size")
 )
 
 func main() {
@@ -24,10 +26,10 @@ func main() {
 	flag.Parse()
 
 	http.Handle("/", http.FileServer(http.Dir("public/")))
-	http.Handle("/data/", http.FileServer(http.Dir("data/")))
+	http.Handle("/data/", http.FileServer(http.Dir(*datadir)))
 	http.Handle("/upload.cgi", &UploadHandler{
-		DataDir:     "data/",
-		MaxFileSize: 10 * 1024 * 1024,
+		DataDir:     *datadir,
+		MaxFileSize: *maxsize,
 	})
 
 	sigCh := make(chan os.Signal, 1)
