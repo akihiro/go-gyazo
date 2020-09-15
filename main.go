@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	http.Handle("/", http.FileServer(http.Dir("public/")))
-	http.Handle("/data/", http.FileServer(http.Dir(*datadir)))
+	http.Handle("/data/", http.StripPrefix("/data/", http.FileServer(http.Dir(*datadir))))
 	http.Handle("/upload.cgi", &UploadHandler{
 		DataDir:     *datadir,
 		MaxFileSize: *maxsize,
