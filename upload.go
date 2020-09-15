@@ -21,6 +21,10 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
+	if err := r.ParseMultipartForm(1024*1024*10); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	uploadedFile, handler, err := r.FormFile("upload")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
