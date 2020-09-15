@@ -49,7 +49,9 @@ func main() {
 		log.Print("Server shutdown")
 	}()
 
+	log.Printf("Listen: %s", *listen)
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatal("Server closed with error:", err)
 	}
+	log.Print("finished")
 }
