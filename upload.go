@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,6 +14,7 @@ import (
 
 type UploadHandler struct {
 	DataDir     string
+	BaseURL     string
 	MaxFileSize int64
 }
 
@@ -53,4 +55,5 @@ func (h *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	name := base64.RawURLEncoding.EncodeToString(hgen.Sum(nil))
 	os.Rename(f.Name(), filepath.Join(h.DataDir, name+ext))
 	log.Printf("size:%d name:%s", size, name)
+	fmt.Fprintf(w, "%s/data/%s%s", h.BaseURL, name, ext)
 }
